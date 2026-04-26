@@ -1,0 +1,49 @@
+name: kvn-service-spring
+
+services:
+#  dbmate:
+#    build:
+#      context: .
+#      dockerfile: src/main/docker/Dockerfile.migrate
+#    container_name: kvn-service-spring-migrator
+#    volumes:
+#      - ./src/main/resources/db/migrations:/db/migrations:ro
+#    environment:
+#      DATABASE_URL: "postgres://${POSTGRES_PGUSER}:${POSTGRES_PGPASS}@${POSTGRES_INTERNAL_HOST}:${POSTGRES_PORT}/${POSTGRES_PGDB}?sslmode=disable"
+#    depends_on:
+#      postgres-db:
+#        condition: service_healthy
+#    command: up
+#    networks:
+#      - kvn-service-network
+
+  postgres-db:
+    container_name: kvn-service-spring-postgres
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_PGUSER}
+      POSTGRES_PASSWORD: ${POSTGRES_PGPASS}
+      POSTGRES_DB: ${POSTGRES_PGDB}
+      PGDATA: "/var/lib/postgresql/18/docker"
+      PGUSER: ${POSTGRES_PGUSER}
+      PGDATABASE: ${POSTGRES_PGDB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_PGUSER} -d ${POSTGRES_PGDB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    #      - ./postgres/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    networks:
+      - kvn-service-network
+
+volumes:
+  postgres-data:
+
+networks:
+  kvn-service-network:
+    driver: bridge

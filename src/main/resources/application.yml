@@ -1,0 +1,24 @@
+spring:
+  cloud.openfeign.client.config:
+    vps-search:
+      url: https://api.all-vps.com
+      logger-level: FULL
+      connect-timeout: 200
+      read-timeout: 30000
+  main:
+    web-application-type: none
+  docker:
+    compose:
+      lifecycle-management: start-only
+  application:
+    name: kvnshop
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kvnmarket_db
+    username: postgres
+    password: postgres
+tg-config:
+  token: 8769134085:AAFfBzj_0NH5J0dXxVaD_LZwQD5Rq1VSPr4
